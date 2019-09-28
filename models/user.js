@@ -24,15 +24,6 @@ const User_schema = mongoose.Schema({
     type: String,
     default: '/path/to/gallery/defaultAvatar.png'
   },
-  subscription: {
-    type: String,
-    default: 'free',
-    enum: ['free', 'pro']
-  },
-  networks: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Network'
-  },
   role: {
     type: String,
     default: 'client'
@@ -84,59 +75,5 @@ module.exports.comparePassword = function(candidatePassword, hash, callback) {
       throw err;
     }
     callback(null, isMatch);
-  });
-};
-
-module.exports.getUserNetworkByName = function(
-  userId,
-  networkName,
-  resolve,
-  reject
-) {
-  User.findById({ _id: userId })
-    .populate({
-      path: 'networks',
-      model: 'Network',
-      populate: {
-        path: 'instantiatedContracts',
-        model: 'InstantiatedContract',
-        populate: {
-          path: 'assetObjects',
-          model: 'AssetObject',
-          populate: {
-            path: 'properties',
-            model: 'AssetProperty'
-          }
-        }
-      }
-    })
-    .exec((err, user) => {
-      if (err) {
-        return reject(err);
-      }
-      for (let i = 0; i < user.networks.length; i++) {
-        if (user.networks[i].name === networkName) {
-          return resolve(user.networks[i]);
-        }
-      }
-      return reject(
-        new Error(`no network ${networkName} found for user ${userId}`).message
-      );
-    });
-};
-
-module.exports.asyncRemoveNetwork = function(userId, networkId) {
-  return new Promise((resolve, reject) => {
-    User.findByIdAndUpdate(
-      { _id: userId },
-      { $pull: { networks: networkId } },
-      { new: true },
-      (err, user) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(user);
-      }
-    );
   });
 };
