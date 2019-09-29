@@ -11,6 +11,7 @@ const dbConnector = require('./utils/dbConnector');
 
 const indexRouter = require('./routes/index');
 const userRouter = require('./routes/user');
+const reportRouter = require('./routes/report');
 
 const app = express();
 
@@ -34,6 +35,7 @@ mongoose
     app.use('/', indexRouter);
     app.use(passport.authenticate('jwt', { session: false }));
     app.use('/user', userRouter);
+    app.use('/report', reportRouter);
 
     // catch 404 and forward to error handler
     app.use((req, res, next) => {

@@ -10,7 +10,6 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/register', (req, res) => {
-  console.log('here')
   const newUser = new User({
     name: req.body.name,
     email: req.body.email,
@@ -20,7 +19,7 @@ router.post('/register', (req, res) => {
 
   User.addUser(newUser, (err, user) => {
     if (err) {
-      res.json('This email is already registered, login instead?');
+      res.status(500).json('This email is already registered, login instead?');
     } else {
       res.json(user);
     }
@@ -33,15 +32,15 @@ router.post('/authenticate', (req, res) => {
 
   User.getUserByEmail(email, (err, user) => {
     if (err) {
-      return res.json('No user with this email');
+      return res.status(500).json(err);
     }
     if (!user) {
-      return res.json('There is no user with such an email, Register instead?');
+      return res.status(404).json('There is no user with such an email, Register instead?');
     }
 
     User.comparePassword(password, user.password, (err, isMatch) => {
       if (err) {
-        res.json('Password didnt match');
+        res.status(500).json('Password didnt match');
       }
       if (isMatch) {
         const token = jwt.sign(user.toJSON(), dbConnector.secret, {
@@ -49,7 +48,7 @@ router.post('/authenticate', (req, res) => {
         });
         return res.json({ token: 'JWT ' + token });
       } else {
-        return res.json('Wrong password');
+        return res.status(500).json('Wrong password');
       }
     });
   });
