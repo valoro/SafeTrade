@@ -16,6 +16,24 @@ const helper = {
         return reject();
       }
     });
+  },
+  isTechManager: encodedToken => {
+    return new Promise((resolve, reject) => {
+      if (helper.verifyToken(encodedToken).role === blockchainStrings.roles.technicalManager) {
+        return resolve();
+      } else {
+        return reject();
+      }
+    });
+  },
+  isFinManager: encodedToken => {
+    return new Promise((resolve, reject) => {
+      if (helper.verifyToken(encodedToken).role === blockchainStrings.roles.financialManager) {
+        return resolve();
+      } else {
+        return reject();
+      }
+    });
   }
 }
 

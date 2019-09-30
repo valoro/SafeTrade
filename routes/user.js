@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Helpers = require('../utils/helpers');
+const blockchainStrings = require('../utils/blockchainStrings');
 
 router.get('/', function(req, res) {
   let token = req.headers.authorization;
@@ -31,7 +32,67 @@ router.post('/admin/:id', (req, res) => {
           res.status(500).json(err);
         } else {
           if (user) {
-            user.role = Strings.roles.admin;
+            user.role = blockchainStrings.roles.admin;
+            user.save(err => {
+              if (err) {
+                res.status(500).json(err);
+              } else {
+                res.json(true);
+              }
+            });
+          } else {
+            res.json('enter a valid user id');
+          }
+        }
+      });
+    })
+    .catch(() => {
+      res.status(401).json('Unauthorized');
+    });
+});
+
+router.post('/tech/:id', (req, res) => {
+  const userId = req.params.id;
+  const token = req.headers.authorization;
+
+  Helpers.isAdmin(token)
+    .then(() => {
+      User.getUserById(userId, (err, user) => {
+        if (err) {
+          res.status(500).json(err);
+        } else {
+          if (user) {
+            user.role = blockchainStrings.roles.technicalManager;
+            user.save(err => {
+              if (err) {
+                res.status(500).json(err);
+              } else {
+                res.json(true);
+              }
+            });
+          } else {
+            res.json('enter a valid user id');
+          }
+        }
+      });
+    })
+    .catch(() => {
+      res.status(401).json('Unauthorized');
+    });
+});
+
+router.post('/financial/:id', (req, res) => {
+  const userId = req.params.id;
+  const token = req.headers.authorization;
+
+  Helpers.isAdmin(token)
+    .then(() => {
+      User.getUserById(userId, (err, user) => {
+        if (err) {
+          res.status(500).json(err);
+        } else {
+          if (user) {
+            user.role = blockchainStrings.roles.financialManager;
             user.save(err => {
               if (err) {
                 res.status(500).json(err);
