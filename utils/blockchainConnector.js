@@ -1,5 +1,24 @@
 const axios = require('axios');
 const BlockchainStrings = require('./blockchainStrings');
+const cron = require("node-cron");
+
+cron.schedule('* * 23 * * *', () => {
+    axios({
+        method: 'POST',
+        url: `${BlockchainStrings.URL}/authenticate`,
+        data: {
+            email: BlockchainStrings.EMAIL,
+            password: BlockchainStrings.PASSWORD
+        }
+    })
+    .then(response => {
+        process.env.SAFE_TRADE_TOKEN = response.data.token;
+    })
+    .catch(err => {
+        console.log('cant update token!, ', err);
+    })
+    console.log('updating blockchain user token evrery 23 hours, ', process.env.SAFE_TRADE_TOKEN);
+});
 
 module.exports = {
     queryAllAssets: async asset => {
@@ -9,7 +28,7 @@ module.exports = {
                 url: `${BlockchainStrings.URL}/asset/${asset}/?networkName=${BlockchainStrings.NETWORKNAME}&contractName=${BlockchainStrings.CONTRACTNAME}`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': BlockchainStrings.USER_TOKEN
+                    'Authorization': process.env.SAFE_TRADE_TOKEN
                 }
             })
             .then(response => {
@@ -27,7 +46,7 @@ module.exports = {
                 url: `${BlockchainStrings.URL}/asset/${asset}/${assetId}/?networkName=${BlockchainStrings.NETWORKNAME}&contractName=${BlockchainStrings.CONTRACTNAME}`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': BlockchainStrings.USER_TOKEN
+                    'Authorization': process.env.SAFE_TRADE_TOKEN
                 }
             })
             .then(response => {
@@ -45,7 +64,7 @@ module.exports = {
                 url: `${BlockchainStrings.URL}/asset/instantiate/${asset}`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': BlockchainStrings.USER_TOKEN
+                    'Authorization': process.env.SAFE_TRADE_TOKEN
                 },
                 data: {
                     networkName: BlockchainStrings.NETWORKNAME,
@@ -69,7 +88,7 @@ module.exports = {
                 url: `http://3.87.134.173:8081/asset/${asset}/${assetId}`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': BlockchainStrings.USER_TOKEN
+                    'Authorization': process.env.SAFE_TRADE_TOKEN
                 },
                 data: {
                     networkName: BlockchainStrings.NETWORKNAME,
@@ -92,7 +111,7 @@ module.exports = {
                 url: `${BlockchainStrings.URL}/asset/${asset}/${assetId}`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': BlockchainStrings.USER_TOKEN
+                    'Authorization': process.env.SAFE_TRADE_TOKEN
                 },
                 data: {
                     networkName: BlockchainStrings.NETWORKNAME,
@@ -114,7 +133,7 @@ module.exports = {
                 url: `${BlockchainStrings.URL}/transaction/info/allBlockData/?networkName=${BlockchainStrings.NETWORKNAME}`,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': BlockchainStrings.USER_TOKEN
+                    'Authorization': process.env.SAFE_TRADE_TOKEN
                 }
             })
             .then(response => {
