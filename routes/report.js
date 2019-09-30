@@ -19,6 +19,23 @@ router.get('/', (req, res) => {
     })
 });
 
+router.get('/info', (req, res) => {
+    let token = req.headers.authorization;
+    Helpers.isAdmin(token)
+    .then(() => {
+        blockchainConnector.getAllBlockData()
+        .then( data => {
+            res.json(data);
+        })
+        .catch(err => {
+            res.status(500).json(err);
+        })
+    })
+    .catch(err => {
+        res.status(401).json('Unauthorized');
+    })
+});
+
 router.get('/:id', (req, res) => {
     let token = req.headers.authorization;
     let id = req.params.id;

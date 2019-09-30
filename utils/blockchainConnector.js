@@ -106,5 +106,23 @@ module.exports = {
                 return reject(err);
             })
         })
+    },
+    getAllBlockData: async () => {
+        return new Promise((resolve, reject) => {
+            axios({
+                method: 'GET',
+                url: `${BlockchainStrings.URL}/transaction/info/allBlockData/?networkName=${BlockchainStrings.NETWORKNAME}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': BlockchainStrings.USER_TOKEN
+                }
+            })
+            .then(response => {
+                return resolve(response.data);
+            })
+            .catch(err => {
+                return reject(err);
+            })
+        })
     }
 };
