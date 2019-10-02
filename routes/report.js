@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Helpers = require('../utils/helpers');
 const blockchainConnector = require('../utils/blockchainConnector');
+const blockchainStrings = require('../utils/blockchainStrings');
 
 router.get('/', (req, res) => {
     let token = req.headers.authorization;
@@ -97,6 +98,7 @@ router.post('/', (req, res) => {
     let type = req.body.type;
     let size = req.body.size;
     let color = req.body.color;
+    let comment = req.body.comment;
     let values = {
         type: type,
         size: size,
@@ -110,6 +112,16 @@ router.post('/', (req, res) => {
             res.status(500).json(err);
         }
         values.userName = user.username;
+        if(user.role === blockchainStrings.roles.financialManager){
+            values.businessComment = comment;
+        }
+        else if(user.role === blockchainStrings.roles.technicalManager){
+            values.technicalComment = comment;
+        }
+        else if(user.role === blockchainStrings.roles.admin){
+            values.technicalComment = comment;
+            values.businessComment = comment;
+        }
         blockchainConnector.instantiateAsset('report', values)
         .then( report => {
             res.json(report);

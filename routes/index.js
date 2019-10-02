@@ -46,7 +46,7 @@ router.post('/authenticate', (req, res) => {
         const token = jwt.sign(user.toJSON(), dbConnector.secret, {
           expiresIn: 604800 // 7 days
         });
-        return res.json({ token: 'JWT ' + token });
+        return res.json({ token: 'JWT ' + token , role: user.role});
       } else {
         return res.status(500).json('Wrong password');
       }
