@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/register', (req, res) => {
   const newUser = new User({
-    name: req.body.name,
+    mobile: req.body.mobile,
     email: req.body.email,
     username: req.body.username,
     password: req.body.password

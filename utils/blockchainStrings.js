@@ -6,6 +6,7 @@ module.exports = {
     PASSWORD: 'testing',
     roles: {
         admin: 'admin',
+        client: 'client',
         technicalManager: 'technicalManager',
         financialManager: 'financialManager'
     }
