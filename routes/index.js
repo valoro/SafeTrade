@@ -10,11 +10,16 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/register', (req, res) => {
+  let role = req.body.role;
+  if(role !== 'financialManager' && role !== 'technicalManager' && role !== 'client'){
+    return res.status(500).json('please enter a valid role')
+  }
   const newUser = new User({
     mobile: req.body.mobile,
     email: req.body.email,
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    role: role
   });
 
   User.addUser(newUser, (err, user) => {
