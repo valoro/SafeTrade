@@ -221,18 +221,18 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     let token = req.headers.authorization;
     let id = req.params.id;
-    Helpers.isAdmin(token)
-    .then(() => {
+    Helpers.verifyToken(token, (err, user) => {
+        if(err){
+            return res.status(500).json(err);
+        }
         blockchainConnector.deleteAssetById('report', id)
         .then( report => {
             res.json(report);
         })
         .catch(err => {
+            console.log(err)
             res.status(500).json(err);
         })
-    })
-    .catch(err => {
-        res.status(401).json('Unauthorized');
     })
 });
 
