@@ -1,9 +1,11 @@
+require('dotenv').config();
+
 module.exports = {
-    URL: 'http://3.87.134.173:8081',
-    NETWORKNAME: 'testnet',
-    CONTRACTNAME: 'report',
-    EMAIL: 'testing@testing.com',
-    PASSWORD: 'testing',
+    URL: process.env.VALORO_URL,
+    NETWORKNAME: process.env.NETWORK_NAME,
+    CONTRACTNAME: process.env.CONTRACT_NAME,
+    EMAIL: process.env.EMAIL,
+    PASSWORD: process.env.PASSWORD,
     roles: {
         admin: 'admin',
         client: 'client',
